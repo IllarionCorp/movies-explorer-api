@@ -1,30 +1,30 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    email: {
-        required: true,
-        type: String,
-        unique: true
-    },
+  email: {
+    required: true,
+    type: String,
+    unique: true,
+  },
 
-    password: {
-        type: String,
-        required: true,
-        select: false
-    },
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
 
-    name: {
-        type: String,
-        minlength: 2,
-        maxlength: 30
-    }
-})
+  name: {
+    type: String,
+    minlength: 2,
+    maxlength: 30,
+  },
+});
 
 userSchema.methods.toJSON = function () {
-    const obj = this.toObject();
-    delete obj.password;
-  
-    return obj;
-  }
+  const obj = this.toObject();
+  delete obj.password;
 
-  module.exports = mongoose.model('users', userSchema);
+  return obj;
+};
+
+module.exports = mongoose.model('users', userSchema);
