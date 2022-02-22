@@ -1,0 +1,84 @@
+const Movie = require('../models/movies');
+const NotFoundError = require('../errors/not-found-error');
+const BadRequestError = require('../errors/bad-request-error');
+
+module.exports.getMyMovies = (res, req, next) => {
+  const myId = req.user._id;
+
+  return Movie
+    .find({ owner: myId })
+    .then((movies) => {
+      res.status(200).send(movies);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Невалидный id'));
+      } else {
+        next(err);
+      }
+    });
+};
+
+module.exports.postMovies = (req, res, next) => {
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    nameRU,
+    nameEN,
+    thumbnail,
+    movieId,
+  } = req.body;
+  const owner = req.user._id;
+
+  return Movie
+    .create(
+      {
+        country,
+        director,
+        duration,
+        year,
+        description,
+        image,
+        trailer,
+        nameRU,
+        nameEN,
+        thumbnail,
+        movieId,
+        owner,
+      },
+    )
+    .then((movie) => {
+      res.status(200).send(movie);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
+    });
+};
+
+module.exports.deleteMovie = (req, res, next) => {
+  const movieId = req.params;
+
+  return Movie
+    .findById(movieId)
+    .findOneAndRemove({ owner: req.user._id })
+    .orFail(new NotFoundError('Фильм с указанным id не найден'))
+    .then((movies) => {
+      res.status(200).send(movies);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Невалидный id'));
+      } else {
+        next(err);
+      }
+    });
+};
