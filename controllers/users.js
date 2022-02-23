@@ -61,11 +61,13 @@ module.exports.loginUser = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
-          sameSite: true,
+          sameSite: false,
         })
-        .end();
+        .send({ user });
     })
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next(err)});
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -93,5 +95,9 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.logoutUser = (req, res) => {
   res.clearCookie('jwt');
-  return res.sendStatus(200);
+  try {
+    res.status(200).send('Вы вышли');
+  } catch (err) {
+    next(err);
+  }
 };

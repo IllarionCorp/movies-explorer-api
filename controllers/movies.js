@@ -2,11 +2,9 @@ const Movie = require('../models/movies');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
 
-module.exports.getMyMovies = (res, req, next) => {
-  const myId = req.user._id;
-
+module.exports.getMyMovies = (req, res, next) => {
   return Movie
-    .find({ owner: myId })
+    .find({owner: req.user._id })
     .then((movies) => {
       res.status(200).send(movies);
     })
@@ -27,8 +25,8 @@ module.exports.postMovies = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
-    nameRU,
+    trailerLink,
+    nameRu,
     nameEN,
     thumbnail,
     movieId,
@@ -44,8 +42,8 @@ module.exports.postMovies = (req, res, next) => {
         year,
         description,
         image,
-        trailer,
-        nameRU,
+        trailerLink,
+        nameRu,
         nameEN,
         thumbnail,
         movieId,
