@@ -1,6 +1,7 @@
 const Movie = require('../models/movies');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
+const Forbidden = require('../errors/forbidden');
 
 module.exports.getMyMovies = (req, res, next) => {
   return Movie
@@ -64,10 +65,11 @@ module.exports.postMovies = (req, res, next) => {
 
 module.exports.deleteMovie = (req, res, next) => {
   const movieId = req.params;
+  const myId = req.user._id;
 
   return Movie
     .findById(movieId)
-    .findOneAndRemove({ owner: req.user._id })
+    .findOneAndRemove({ owner: myId })
     .orFail(new NotFoundError('Фильм с указанным id не найден'))
     .then((movies) => {
       res.status(200).send(movies);
@@ -75,6 +77,8 @@ module.exports.deleteMovie = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Невалидный id'));
+      } else if(err.name === 'DocumentNotFoundError') {
+        next( new Forbidden('Это чужой фильм'));
       } else {
         next(err);
       }
