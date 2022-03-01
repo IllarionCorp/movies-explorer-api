@@ -33,7 +33,7 @@ module.exports.updateUser = (req, res, next) => {
       { email, name },
       {
         new: true,
-        runValidators: true,
+        // runValidators: true,
       },
     )
     .orFail(new NotFoundError(`Пользователь с id ${id} не найден`))
@@ -67,7 +67,8 @@ module.exports.loginUser = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
-      next(err)});
+      next(err);
+    });
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -93,7 +94,7 @@ module.exports.createUser = (req, res, next) => {
       }));
 };
 
-module.exports.logoutUser = (req, res) => {
+module.exports.logoutUser = (req, res, next) => {
   res.clearCookie('jwt');
   try {
     res.status(200).send('Вы вышли');

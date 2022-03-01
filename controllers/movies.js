@@ -3,20 +3,18 @@ const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
 const Forbidden = require('../errors/forbidden');
 
-module.exports.getMyMovies = (req, res, next) => {
-  return Movie
-    .find({owner: req.user._id })
-    .then((movies) => {
-      res.status(200).send(movies);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Невалидный id'));
-      } else {
-        next(err);
-      }
-    });
-};
+module.exports.getMyMovies = (req, res, next) => Movie
+  .find({ owner: req.user._id })
+  .then((movies) => {
+    res.status(200).send(movies);
+  })
+  .catch((err) => {
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Невалидный id'));
+    } else {
+      next(err);
+    }
+  });
 
 module.exports.postMovies = (req, res, next) => {
   const {
@@ -69,16 +67,18 @@ module.exports.deleteMovie = (req, res, next) => {
 
   return Movie
     .findById(movieId)
-    .findOneAndRemove({ owner: myId })
     .orFail(new NotFoundError('Фильм с указанным id не найден'))
     .then((movies) => {
-      res.status(200).send(movies);
+      if (movies.owner.toString() !== myId) {
+        next(new Forbidden('Нет прав для выполнения операции'));
+      }
+      Movie.findByIdAndDelete({ owner: myId })
+        .then(() => res.status(200).send(movies))
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Невалидный id'));
-      } else if(err.name === 'DocumentNotFoundError') {
-        next( new Forbidden('Это чужой фильм'));
       } else {
         next(err);
       }

@@ -34,6 +34,10 @@ const movieSchema = new mongoose.Schema({
   trailerLink: {
     type: String,
     required: true,
+    validate: {
+      validator: (v) => /(http:\/\/|https:\/\/)(www)*[a-z0-9\S]*/.test(v),
+      message: 'Не валидная ссылка',
+    },
   },
 
   thumbnail: {
