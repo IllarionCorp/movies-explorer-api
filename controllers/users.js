@@ -4,7 +4,8 @@ const User = require('../models/users');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
 const ConflictError = require('../errors/conflict-error');
-const { JWT_SECRET } = require('../config');
+
+const { JWT_SECRET } = process.env;
 
 module.exports.getUser = (req, res, next) => {
   const id = req.user._id;
@@ -33,7 +34,7 @@ module.exports.updateUser = (req, res, next) => {
       { email, name },
       {
         new: true,
-        // runValidators: true,
+        runValidators: true,
       },
     )
     .orFail(new NotFoundError(`Пользователь с id ${id} не найден`))
@@ -57,6 +58,7 @@ module.exports.loginUser = (req, res, next) => {
   return User.findOneByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+      console.log(JWT_SECRET);
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,

@@ -12,18 +12,14 @@ const moviesRouter = require('./routes/movies');
 const errorHandler = require('./middleware/error-handler');
 const NotFoundError = require('./errors/not-found-error');
 
-const { PORT = 3000 } = process.env;
+const { PORT, DB_ADDRESS } = process.env;
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
 app.use(bodyParser.json());
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/mvexapidb', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
+  .connect(DB_ADDRESS)
   .then(() => {
     console.log('Подключено к кладезю знаний');
   })
