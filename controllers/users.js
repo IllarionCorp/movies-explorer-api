@@ -7,7 +7,6 @@ const ConflictError = require('../errors/conflict-error');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 
-
 module.exports.getUser = (req, res, next) => {
   const id = req.user._id;
   return User
