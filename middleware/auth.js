@@ -7,9 +7,9 @@ const Unauthorized = require('../errors/unauthorized-error');
 module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
   let payload;
-
+    console.log(token)
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'secret-key');
   } catch (err) {
     next(new Unauthorized('Необходима авторизация'));
   }

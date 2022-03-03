@@ -11,17 +11,16 @@ const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
 const errorHandler = require('./middleware/error-handler');
 const NotFoundError = require('./errors/not-found-error');
-
-const { PORT, DB_ADDRESS } = process.env;
+const { NODE_ENV, DB_ADDRESS, PORT} = process.env;
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
 app.use(bodyParser.json());
 
 mongoose
-  .connect(DB_ADDRESS)
+  .connect(NODE_ENV === 'production' ? DB_ADDRESS : 'mongodb://127.0.0.1:27017/mvexapidb')
   .then(() => {
-    console.log('Подключено к кладезю знаний');
+    console.log(`Подключено к кладезю знаний`);
   })
   .catch((err) => {
     console.log(err);
@@ -44,6 +43,6 @@ app.use((res, req, next) => {
 
 app.use(errorLogger);
 app.use(errorHandler);
-app.listen(PORT, () => {
-  console.log(`Пришельцы на порту ${PORT}`);
+app.listen(NODE_ENV === 'production' ? PORT : 3000, () => {
+  console.log(`Пришельцы на порту ${NODE_ENV === 'production' ? PORT : 3000}`);
 });
