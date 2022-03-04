@@ -67,7 +67,6 @@ module.exports.loginUser = (req, res, next) => {
         .send({ user });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
