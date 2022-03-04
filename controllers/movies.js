@@ -69,12 +69,11 @@ module.exports.deleteMovie = (req, res, next) => {
     .findById(movieId)
     .orFail(new NotFoundError('Фильм с указанным id не найден'))
     .then((movies) => {
-      if (movies.owner.toString() !== myId) {
-        next(new Forbidden('Нет прав для выполнения операции'));
+      if (movies.owner.toString() === myId) {
+        return Movie.findByIdAndDelete(movieId)
+          .then(() => res.send(movies));
       }
-      Movie.findByIdAndDelete({ owner: myId })
-        .then(() => res.status(200).send(movies))
-        .catch(next);
+      throw new Forbidden('Нет прав для выполнения операции');
     })
     .catch((err) => {
       if (err.name === 'CastError') {

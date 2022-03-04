@@ -68,6 +68,7 @@
     "glob-parent": "^6.0.2",
     "globals": "^13.12.1",
     "has-flag": "^4.0.0",
+    "helmet": "^5.0.2",
     "http-errors": "^1.8.1",
     "iconv-lite": "^0.4.24",
     "ignore": "^5.2.0",

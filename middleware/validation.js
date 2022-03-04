@@ -22,16 +22,16 @@ const validationPostMovies = celebrate({
     description: Joi.string().required(),
     image: Joi.string().required().custom(validationUrl),
     trailerLink: Joi.string().required().custom(validationUrl),
-    nameRu: Joi.string().required().regex(/^[?!,.а-яА-ЯёЁ0-9\s]+$/),
-    nameEN: Joi.string().required().regex(/^[?!,.a-zA-Z0-9\s]+$/),
+    nameRu: Joi.string().required(),
+    nameEN: Joi.string().required(),
     thumbnail: Joi.string().required().custom(validationUrl),
-    movieId: Joi.string().alphanum().length(24),
+    movieId: Joi.string().required(),
   }),
 });
 
 const validationSignUp = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
     password: Joi.string().required(),
     email: Joi.string().required().email(),
   }),
@@ -53,7 +53,7 @@ const validationUserUpdate = celebrate({
 
 const validationDeleteMovie = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().alphanum().length(24),
+    _id: Joi.string().alphanum().length(24),
   }),
 });
 
