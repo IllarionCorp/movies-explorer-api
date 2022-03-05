@@ -25,7 +25,7 @@ module.exports.postMovies = (req, res, next) => {
     description,
     image,
     trailerLink,
-    nameRu,
+    nameRU,
     nameEN,
     thumbnail,
     movieId,
@@ -42,7 +42,7 @@ module.exports.postMovies = (req, res, next) => {
         description,
         image,
         trailerLink,
-        nameRu,
+        nameRU,
         nameEN,
         thumbnail,
         movieId,
@@ -62,9 +62,9 @@ module.exports.postMovies = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const movieId = req.params;
+  const movieId = req.params._id;
   const myId = req.user._id;
-
+    console.log(movieId);
   return Movie
     .findById(movieId)
     .orFail(new NotFoundError('Фильм с указанным id не найден'))
