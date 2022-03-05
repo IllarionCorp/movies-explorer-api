@@ -46,6 +46,8 @@ module.exports.updateUser = (req, res, next) => {
         next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
       } else if (err.name === 'CastError') {
         next(new BadRequestError('Невалидный id'));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email существует'));
       } else {
         next(err);
       }

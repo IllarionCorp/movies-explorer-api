@@ -64,7 +64,7 @@ module.exports.postMovies = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   const movieId = req.params._id;
   const myId = req.user._id;
-  
+
   return Movie
     .findById(movieId)
     .orFail(new NotFoundError('Фильм с указанным id не найден'))
